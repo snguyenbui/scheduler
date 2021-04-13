@@ -11,6 +11,10 @@ import DayList from "components/DayList";
 import InterviewerListItem from "components/InterviewerListItem"
 import InterviewerList from "components/InterviewerList"
 import Appointment from "components/Appointment/index"
+import Header from "components/Appointment/Header"
+import Empty from "components/Appointment/Empty"
+import Show from "components/Appointment/Show"
+import Delete from "components/Appointment/Delete"
 
 storiesOf("Button", module)
   .addParameters({
@@ -68,11 +72,11 @@ storiesOf("DayList", module)
     <DayList days={days} day={"Tuesday"} setDay={action("setDay")} />
   ));
 
-  const interviewer = {
-    id: 1,
-    name: "Sylvia Palmer",
-    avatar: "https://i.imgur.com/LpaY82x.png"
-  };
+const interviewer = {
+  id: 1,
+  name: "Sylvia Palmer",
+  avatar: "https://i.imgur.com/LpaY82x.png"
+};
   
 storiesOf("InterviewerListItem", module)
   .addParameters({
@@ -140,3 +144,20 @@ storiesOf("Appointment", module)
   .add("Time", () => {
     <Appointment time="12PM" />
   })
+  .add("Header", () => <Header time="12PM" />)
+  .add("Empty", () => <Empty onAdd={action("onAdd")} />)
+  .add("Show", () => (
+    <Show
+      student="Lydia Miller-Jones"
+      interviewer={interviewer}
+      onEdit={action("onEdit")}
+      onDelete={action("onDelete")}
+    /> 
+  ))
+  .add("Delete", () => (
+    <Delete 
+      message="Delete the appointment?"
+      onConfirm={action("onConfirm")}
+      onCancel={action("onCancel")}
+    />
+  ))
