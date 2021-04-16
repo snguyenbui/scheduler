@@ -30,14 +30,26 @@ export default function Application(props) {
       [id]: newAppointment
     };
 
-    axios.put(`/api/appointments/${id}`, newAppointment)
+    return axios.put(`/api/appointments/${id}`, newAppointment)
     .then(() => {
       setState({...state, appointments})
     })
   }
 
-  const cancelInterview = (id, interview) => {
-    console.log(id, interview)
+  const cancelInterview = (id) => {
+    const canceledAppointment = {
+      ...state.appointments[id],
+      interview: null
+    }
+
+    const appointments = {
+      ...state.appointments,
+      [id]: canceledAppointment
+    }
+
+    return axios.delete(`/api/appointments/${id}`).then(() => {
+      setState({...state, appointments})
+    })
   }
 
   const schedule = appointments.map((appointment) => {
