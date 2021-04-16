@@ -6,7 +6,7 @@ const useVisualMode = (initial) => {
 
   const transition = (next, replace = false) => {
     setMode(next);
-    const historyCopy = history;
+    const historyCopy = [...history];
     if (replace) {
       historyCopy.pop();
     }
@@ -15,7 +15,7 @@ const useVisualMode = (initial) => {
 
   const back = () => {
     if (history.length > 1) {
-      const historyCopy = history;
+      const historyCopy = [...history];
       historyCopy.pop();
       setMode(historyCopy[historyCopy.length - 1]);
       setHistory(historyCopy);
