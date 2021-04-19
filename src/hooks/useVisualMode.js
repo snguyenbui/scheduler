@@ -10,8 +10,8 @@ const useVisualMode = (initial) => {
     if (replace) {
       historyCopy.pop();
     }
-    setHistory([...historyCopy, next])
-  }
+    setHistory([...historyCopy, next]);
+  };
 
   const back = () => {
     if (history.length > 1) {
@@ -20,7 +20,7 @@ const useVisualMode = (initial) => {
       setMode(historyCopy[historyCopy.length - 1]);
       setHistory(historyCopy);
     }
-  }
+  };
 
   return { mode, transition, back };
 };

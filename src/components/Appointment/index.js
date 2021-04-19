@@ -1,16 +1,16 @@
-import React from 'react'
+import React from "react";
 
 import "components/Appointment/styles.scss";
 
-import Header from "components/Appointment/Header"
-import Empty from "components/Appointment/Empty"
-import Show from "components/Appointment/Show"
-import Delete from "components/Appointment/Delete"
-import Status from "components/Appointment/Status"
-import Error from "components/Appointment/Error"
-import Form from "components/Appointment/Form"
+import Header from "components/Appointment/Header";
+import Empty from "components/Appointment/Empty";
+import Show from "components/Appointment/Show";
+import Delete from "components/Appointment/Delete";
+import Status from "components/Appointment/Status";
+import Error from "components/Appointment/Error";
+import Form from "components/Appointment/Form";
 
-import useVisualMode from "hooks/useVisualMode"
+import useVisualMode from "hooks/useVisualMode";
 
 export default function Appointment(props) {
   const EMPTY = "EMPTY";
@@ -30,21 +30,27 @@ export default function Appointment(props) {
   const save = (name, interviewer) => {
     const interview = {
       student: name,
-      interviewer
+      interviewer,
     };
 
     transition(SAVING, true);
-    props.bookInterview(props.id, interview).then(() => {
-      transition(SHOW);
-    }).catch(() => transition(ERROR_SAVE, true))
-  }
+    props
+      .bookInterview(props.id, interview)
+      .then(() => {
+        transition(SHOW);
+      })
+      .catch(() => transition(ERROR_SAVE, true));
+  };
 
   const deleting = () => {
     transition(DELETING, true);
-    props.cancelInterview(props.id).then(() => {
-      transition(EMPTY);
-    }).catch(() => transition(ERROR_DELETE, true))
-  }
+    props
+      .cancelInterview(props.id)
+      .then(() => {
+        transition(EMPTY);
+      })
+      .catch(() => transition(ERROR_DELETE, true));
+  };
 
   return (
     <article className="appointment">
@@ -58,37 +64,37 @@ export default function Appointment(props) {
           onEdit={() => transition(EDIT)}
         />
       )}
-      {mode === CREATE && <Form 
-        interviewers={props.interviewers}
-        onCancel={() => back()}
-        onSave={save}
-      />}
-      {mode === EDIT && <Form 
-        name={props.interview.student}
-        interviewer={props.interview.interviewer.id}
-        interviewers={props.interviewers}
-        onCancel={() => back()}
-        onSave={save}
-      />}
-      {mode === SAVING && <Status 
-        message="Saving"
-      />}
-      {mode === DELETE && <Delete 
-        message="Are you sure you want to cancel this appointment?"
-        onCancel={() => back()}
-        onConfirm={() => deleting()}
-      />}
-      {mode === DELETING && <Status 
-        message="Canceling appointment"
-      />}
-      {mode === ERROR_SAVE && <Error 
-        message="Could not save data"
-        onClose={() => back()}
-      />}
-      {mode === ERROR_DELETE && <Error 
-        message="Could not cancel appointment"
-        onClose={() => back()}
-      />}
+      {mode === CREATE && (
+        <Form
+          interviewers={props.interviewers}
+          onCancel={() => back()}
+          onSave={save}
+        />
+      )}
+      {mode === EDIT && (
+        <Form
+          name={props.interview.student}
+          interviewer={props.interview.interviewer.id}
+          interviewers={props.interviewers}
+          onCancel={() => back()}
+          onSave={save}
+        />
+      )}
+      {mode === SAVING && <Status message="Saving" />}
+      {mode === DELETE && (
+        <Delete
+          message="Are you sure you want to cancel this appointment?"
+          onCancel={() => back()}
+          onConfirm={() => deleting()}
+        />
+      )}
+      {mode === DELETING && <Status message="Canceling appointment" />}
+      {mode === ERROR_SAVE && (
+        <Error message="Could not save data" onClose={() => back()} />
+      )}
+      {mode === ERROR_DELETE && (
+        <Error message="Could not cancel appointment" onClose={() => back()} />
+      )}
     </article>
-  )
+  );
 }
