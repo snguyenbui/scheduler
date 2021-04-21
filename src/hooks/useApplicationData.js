@@ -32,7 +32,12 @@ export default function useApplicationData() {
     };
 
     return axios.put(`/api/appointments/${id}`, newAppointment).then(() => {
-      setSpots(state.day, -1);
+      if (state.appointments[id].interview === null) {
+        setSpots(state.day, -1);
+      }
+      if (state.appointments[id].interview !== null) {
+        setSpots(state.day, 0);
+      }
       setState({ ...state, appointments });
     });
   };
@@ -47,7 +52,6 @@ export default function useApplicationData() {
       ...state.appointments,
       [id]: canceledAppointment,
     };
-
     return axios.delete(`/api/appointments/${id}`).then(() => {
       setSpots(state.day, 1);
       setState({ ...state, appointments });
