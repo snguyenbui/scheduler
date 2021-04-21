@@ -21,10 +21,10 @@ afterEach(() => {
   cleanup();
 });
 
-//Only one test after the first can be ran at a time due to issues with library not cleaning up properly
+//Only one test modifiying appointments can be ran at a time due to issues with library not cleaning up properly
 describe("Application", () => {
   it("defaults to Monday and changes the schedule when a new day is selected", () => {
-    const { container, getByText } = render(<Application />);
+    const { getByText } = render(<Application />);
     return waitForElement(() => getByText("Monday")).then(() => {
       fireEvent.click(getByText("Tuesday"));
       expect(getByText("Leopold Silvers")).toBeInTheDocument();
