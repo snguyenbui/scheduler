@@ -1,8 +1,23 @@
 # Interview Scheduler
 
+---
+
+A Lighthouse Labs project built on React with testing frameworks Storybook, jest, react-testing library and cypress
+
+---
+
 ## Setup
 
 Install dependencies with `npm install`.
+
+> Will require running the accompanying [API](https://github.com/snguyenbui/scheduler-api) to work locally provided by [Lighthouse Labs](https://github.com/lighthouse-labs)
+
+Configure a .env file to the following format
+```
+REACT_APP_WEBSOCKET_URL=
+PORT=
+CHOKIDAR_USEPOLLING=false
+```
 
 ## Running Webpack Development Server
 
@@ -21,3 +36,9 @@ npm test
 ```sh
 npm run storybook
 ```
+
+### Upcoming features
+1. Websocket integration so multiple instances see the same information at the same time
+2. API remote hosting 
+3. Better documentation in the README
+4. and more!
