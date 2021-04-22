@@ -52,6 +52,15 @@ export default function Appointment(props) {
       .catch(() => transition(ERROR_DELETE, true));
   };
 
+  useEffect(() => {
+    if (mode === EMPTY && props.interview) {
+      transition(SHOW);
+    }
+    if (mode === SHOW && !props.interview) {
+      transition(EMPTY);
+    }
+  }, [mode, transition, props.interview]);
+
   return (
     <article className="appointment" data-testid="appointment">
       <Header time={props.time} />

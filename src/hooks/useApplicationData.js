@@ -100,7 +100,7 @@ export default function useApplicationData() {
         },
       });
     });
-  }, []);
+  }, [state]);
 
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
