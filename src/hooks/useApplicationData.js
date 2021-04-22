@@ -1,5 +1,11 @@
-import { useReducer, useEffect } from "react";
 import axios from "axios";
+import { useReducer, useEffect } from "react";
+
+require("dotenv");
+const socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+socket.addEventListener("open", function (event) {
+  socket.send("ping");
+});
 
 export default function useApplicationData() {
   const SET_DAY = "SET_DAY";
@@ -9,15 +15,13 @@ export default function useApplicationData() {
 
   const reducer = (state, action) => {
     const actions = {
-      SET_DAY: { ...state, ...action.day },
+      SET_DAY: { ...state, ...action.data },
       SET_APPLICATION_DATA: {
         ...state,
-        days: action.days,
-        appointments: action.appointments,
-        interviewers: action.interviewers,
+        ...action.data,
       },
-      SET_INTERVIEW: { ...state, ...action.appointments },
-      SET_SPOTS: { ...state, ...action.days },
+      SET_INTERVIEW: { ...state, ...action.data },
+      SET_SPOTS: { ...state, ...action.data },
       default: new Error(
         `Tried to reduce with unsupported action type: ${action.type}`
       ),
@@ -32,7 +36,7 @@ export default function useApplicationData() {
     interviewers: {},
   });
 
-  const setDay = (day) => dispatch({ type: SET_DAY, day });
+  const setDay = (day) => dispatch({ type: SET_DAY, data: { day } });
   const setSpots = (day, amount) => {
     const days = [...state.days];
     days.forEach((target) => {
@@ -40,7 +44,7 @@ export default function useApplicationData() {
         target.spots += amount;
       }
     });
-    dispatch({ type: SET_SPOTS, days });
+    dispatch({ type: SET_SPOTS, data: { days } });
   };
 
   const bookInterview = (id, interview) => {
@@ -61,7 +65,7 @@ export default function useApplicationData() {
       if (state.appointments[id].interview !== null) {
         setSpots(state.day, 0);
       }
-      dispatch({ type: SET_INTERVIEW, appointments });
+      dispatch({ type: SET_INTERVIEW, data: { appointments } });
     });
   };
 
@@ -77,7 +81,7 @@ export default function useApplicationData() {
     };
     return axios.delete(`/api/appointments/${id}`).then(() => {
       setSpots(state.day, 1);
-      dispatch({ type: SET_INTERVIEW, appointments });
+      dispatch({ type: SET_INTERVIEW, data: { appointments } });
     });
   };
 
@@ -89,12 +93,46 @@ export default function useApplicationData() {
     ]).then((all) => {
       dispatch({
         type: SET_APPLICATION_DATA,
-        days: all[0].data,
-        appointments: all[1].data,
-        interviewers: all[2].data,
+        data: {
+          days: all[0].data,
+          appointments: all[1].data,
+          interviewers: all[2].data,
+        },
       });
-    }, []);
-  });
+    });
+  }, []);
+
+  socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data !== "pong") {
+      if (data.interview === null) {
+        const canceledAppointment = {
+          ...state.appointments[data.id],
+          interview: null,
+        };
+
+        const appointments = {
+          ...state.appointments,
+          [data.id]: canceledAppointment,
+        };
+
+        dispatch({ type: SET_INTERVIEW, data: { appointments } });
+      }
+      if (data.interview !== null) {
+        const canceledAppointment = {
+          ...state.appointments[data.id],
+          interview: data.interview,
+        };
+
+        const appointments = {
+          ...state.appointments,
+          [data.id]: canceledAppointment,
+        };
+
+        dispatch({ type: SET_INTERVIEW, data: { appointments } });
+      }
+    }
+  };
 
   return { state, setDay, bookInterview, cancelInterview };
 }
