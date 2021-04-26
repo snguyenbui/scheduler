@@ -1,4 +1,4 @@
-c# Interview Scheduler
+# Interview Scheduler
 
 ---
 
